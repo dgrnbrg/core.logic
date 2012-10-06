@@ -1792,11 +1792,16 @@
 (defn ==
   "A goal that attempts to unify terms u and v."
   [u v]
-  (fn [^Substitutions a]
-    (when-let [ap (unify a u v)]
-      (if (pos? (count (.cs a)))
-        ((update-prefix a ap) a)
-        ap))))
+  (reify
+    IMKExp
+    (mk-exp [_]
+      :nofollow)
+    clojure.lang.IFn
+    (invoke [_ a] 
+      (when-let [ap (unify a u v)]
+        (if (pos? (count (.cs a)))
+          ((update-prefix a ap) a)
+          ap)))))
 
 (defn- bind-conde-clause [a]
   (fn [g-rest]
